@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>本页面由泽川提供</title>
+<style>
+html,body {
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#000;
+}
+iframe {
+  width:100%;
+  height:100%;
+  border:none;
+}
+.expired {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  background:#000;
+  color:#fff;
+  font-size:18px;
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+  // ===== 到期时间（北京时间）=====
+  const expireTime = new Date('2025-12-10T00:00:00+08:00').getTime();
+
+  // 获取当前北京时间（通过 UTC 偏移计算）
+  const now = new Date().getTime();
+
+  // 如果已过期，显示提示并终止加载
+  if (now >= expireTime) {
+    document.getElementById('app').innerHTML =
+      '<div class="expired">该页面已过期</div>';
+    return;
+  }
+
+  // 从 ?url= 获取嵌入目标链接
+  const params = new URLSearchParams(location.search);
+  const target = params.get('url');
+
+  // 简单验证（仅允许 https://）
+  if (!target || !/^https?:\/\//i.test(target)) {
+    document.getElementById('app').innerHTML =
+      '<div class="expired">无效链接</div>';
+    return;
+  }
+
+  // 创建 iframe，加载用户目标网站
+  const iframe = document.createElement('iframe');
+  iframe.src = target;
+  iframe.referrerPolicy = 'no-referrer';
+  iframe.sandbox = 'allow-same-origin allow-scripts allow-forms allow-popups';
+  document.getElementById('app').appendChild(iframe);
+})();
+</script>
+</body>
+</html>
